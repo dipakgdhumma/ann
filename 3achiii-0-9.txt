@@ -1,0 +1,41 @@
+import numpy as np
+
+# Convert number to 4-bit binary (since 0–9 fits in 4 bits)
+def to_binary(n):
+    return [int(b) for b in format(n, '04b')]
+
+# Create dataset
+X = np.array([to_binary(i) for i in range(10)])  # Inputs: binary of 0–9
+y = np.array([i % 2 for i in range(10)])         # Labels: 0 if even, 1 if odd
+
+# Initialize weights and bias
+weights = np.zeros(4)
+bias = 0
+lr = 0.1  # Learning rate
+
+# Activation function: Step function
+def step(x):
+    return 1 if x >= 0 else 0
+
+# Training the Perceptron
+for epoch in range(10):  # 10 epochs
+    for i in range(len(X)):
+        x_input = X[i]
+        target = y[i]
+        
+        # Weighted sum
+        linear_output = np.dot(x_input, weights) + bias
+        prediction = step(linear_output)
+        
+        # Update rule
+        error = target - prediction
+        weights += lr * error * x_input
+        bias += lr * error
+
+# Test the perceptron
+print("Digit\tBinary\t\tPrediction (0=Even, 1=Odd)")
+for i in range(10):
+    binary = to_binary(i)
+    result = step(np.dot(binary, weights) + bias)
+    print(f"{i}\t{binary}\t{result}")
+
